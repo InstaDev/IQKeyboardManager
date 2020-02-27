@@ -55,6 +55,12 @@ Codeless drop-in universal library allows to prevent issues of keyboard sliding 
     ///  MARK: UIKeyboard handling
     ///---------------------------
     
+    
+    /**
+     Enable/disable avoiding  view to be always above keyboard.
+    */
+    @objc public var avoidingView: UIView?
+    
     /**
     Enable/disable managing distance between keyboard and textField. Default is YES(Enabled when class loads in `+(void)load` method).
     */
@@ -950,7 +956,7 @@ Codeless drop-in universal library allows to prevent issues of keyboard sliding 
         
         //  We are unable to get textField object while keyboard showing on WKWebView's textField.  (Bug ID: #11)
         if _privateHasPendingAdjustRequest == true,
-            let textFieldView = _textFieldView,
+            let textFieldView = avoidingView != nil ? avoidingView : _textFieldView,
             let rootController = textFieldView.parentContainerViewController(),
             let window = keyWindow(),
             let textFieldViewRectInWindow = textFieldView.superview?.convert(textFieldView.frame, to: window),
@@ -1505,7 +1511,6 @@ Codeless drop-in universal library allows to prevent issues of keyboard sliding 
 
     /*  UIKeyboardWillShowNotification. */
     @objc internal func keyboardWillShow(_ notification: Notification?) {
-        
         _kbShowNotification = notification
 
         //  Boolean to know keyboard is showing/hiding
